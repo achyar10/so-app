@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap'
+import PrivateRoute from './middlewares/PrivateRoute'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// Containers
+const TheLayout = React.lazy(() => import('./containers/TheLayout'));
+
+// Pages
+const Login = React.lazy(() => import('./pages/login'));
+
+const loading = (
+  <Spinner animation="border" role="status">
+    <span className="sr-only">Loading...</span>
+  </Spinner>
+)
+
+class App extends Component {
+
+  render() {
+    return (
+      <BrowserRouter>
+        <React.Suspense fallback={loading}>
+          <Switch>
+            <Route exact path="/login" name="Login Page" render={props => <Login {...props} />} />
+            <PrivateRoute path="/" name="Home" render={props => <TheLayout {...props} />} />
+          </Switch>
+        </React.Suspense>
+      </BrowserRouter>
+    );
+  }
 }
 
 export default App;
